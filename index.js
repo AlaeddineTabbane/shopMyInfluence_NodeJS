@@ -37,14 +37,31 @@ const refArticles = db.ref('articles');
 
 app.use('/brand', function (req, res) {
   try {
-    console.log('hello');
-  
     const { offerId } = req.query
     const refBrands = db.ref(`brands/${offerId}`);
     let d = {}
     refBrands.once('value', (snapshot) => {
       const { displayName, pic, offerId } = snapshot.val()
       return res.send({ displayName, pic, offerId });
+  
+    }, (errorObject) => {
+      console.log('The read failed: ' + errorObject.name);
+      return res
+      .status(500)
+      .json({ general: "Something went wrong, please try again"}); 
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})
+
+app.use('/topInfluencer', function (req, res) {
+  try {
+
+    refInfluencers.once('value', (snapshot) => {
+      console.log(snapshot.val());
+      // const { displayName, pic, offerId } = snapshot.val()
+      return res.send(snapshot.val());
   
     }, (errorObject) => {
       console.log('The read failed: ' + errorObject.name);
