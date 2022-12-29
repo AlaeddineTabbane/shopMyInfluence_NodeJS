@@ -17,7 +17,7 @@ app.use(cors());
 
 var admin = require("firebase-admin");
 
-var serviceAccount = require("./test-smi-a21cb-425f711014df.json");
+var serviceAccount = require("./serviceAcount.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -39,11 +39,9 @@ app.use('/brand', function (req, res) {
   try {
     const { offerId } = req.query
     const refBrands = db.ref(`brands/${offerId}`);
-    let d = {}
     refBrands.once('value', (snapshot) => {
       const { displayName, pic, offerId } = snapshot.val()
       return res.send({ displayName, pic, offerId });
-  
     }, (errorObject) => {
       console.log('The read failed: ' + errorObject.name);
       return res
@@ -57,12 +55,8 @@ app.use('/brand', function (req, res) {
 
 app.use('/topInfluencer', function (req, res) {
   try {
-
     refInfluencers.once('value', (snapshot) => {
-      console.log(snapshot.val());
-      // const { displayName, pic, offerId } = snapshot.val()
       return res.send(snapshot.val());
-  
     }, (errorObject) => {
       console.log('The read failed: ' + errorObject.name);
       return res
